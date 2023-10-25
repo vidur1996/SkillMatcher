@@ -6,6 +6,7 @@ from distutils.log import debug
 from fileinput import filename
 from flask import *
 import os
+from PdfConvertion.PdfProcessing import extract_text_from_pdf
 
 app = Flask(__name__)
 
@@ -115,9 +116,9 @@ def fileUpload():
 		cursor.execute("INSERT INTO files (username, file_name, file_number) VALUES (%s, %s, %s)",
 					   (username, file_name, file_number if existing_file else 1))
 		mysql.connection.commit()
+		pdf_text = extract_text_from_pdf(file_path)
 
-
-		return render_template("Acknowledgement.html", name=f'{username}_cv'+file_number+'.pdf')
+		return render_template("Acknowledgement.html", name=file_name, pdf_text=pdf_text)
 
 
 if __name__ == '__main__':
