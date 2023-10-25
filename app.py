@@ -5,6 +5,7 @@ import re
 from distutils.log import debug
 from fileinput import filename
 from flask import *
+import os
 
 app = Flask(__name__)
 
@@ -90,11 +91,33 @@ def fileUpload():
 		f.seek(0)
 		# Assuming 'username' is sent as a parameter in the request
 		username = session.get('username')
+		cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+		cursor.execute('SELECT * FROM files WHERE username = % s', (username,))
+		existing_file = cursor.fetchone()
+		print(existing_file)
+		if existing_file:
+			# User has already uploaded a file, save with increment value
+			file_number = existing_file['file_number'] + 1
+			file_name = f'{username}_cv_{file_number}.pdf'
+		else:
+			# User is uploading for the first time
+			file_number = 1
+			file_name = f'{username}_cv.pdf'
+		# Create a 'cv' directory if it doesn't exist
+		cv_dir = os.path.join(os.getcwd(), 'cv')
+		os.makedirs(cv_dir, exist_ok=True)
 
 		# Save the file as 'username_cv.pdf'
-		f.save(f'{username}_cv.pdf')
 
-		return render_template("Acknowledgement.html", name=f'{username}_cv.pdf')
+		file_path = os.path.join(cv_dir, file_name)
+		f.save(file_path)
+		# Add entry to the 'files' table
+		cursor.execute("INSERT INTO files (username, file_name, file_number) VALUES (%s, %s, %s)",
+					   (username, file_name, file_number if existing_file else 1))
+		mysql.connection.commit()
+
+
+		return render_template("Acknowledgement.html", name=f'{username}_cv'+file_number+'.pdf')
 
 
 if __name__ == '__main__':
