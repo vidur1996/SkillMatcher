@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill matcher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesindex.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Skill Matcher</h1>
+        </div>
+
+        <div class="welcome-message">
+            Hi {{ session.username }}<br>
+            Welcome to the Skill Matcher <br>
+            <div class="warning-message">
+            please upload you CV in pdf format (Max size - 2.5MB )
+            </div>
+        </div>
+
+        <div class="file-upload">
+            <form action="/fileupload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+</body>
+</html>
