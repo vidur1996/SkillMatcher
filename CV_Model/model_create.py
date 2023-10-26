@@ -11,6 +11,7 @@ skills_data = [record['Skills'] for record in data]
 print ("read json")
 # Preprocess and tokenize the skills data
 tokenized_skills = [word_tokenize(skill.lower()) for skill in skills_data]
+
 print ("tokeize json")
 # Initialize and train the Word2Vec model
 model = Word2Vec(sentences=tokenized_skills, vector_size=100, window=5, min_count=1, sg=0)

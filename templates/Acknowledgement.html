@@ -6,22 +6,30 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div align="center" class="border">
-        <div class="header">
-            <h1 class="word">Acknowledgement</h1>
-        </div>
-        </br></br></br>
-        <h1 class="bottom">
-            Hi {{ session.username }}!!</br></br> Your file ({{ name }}) has been uploaded successfully.
-        </h1></br></br></br>
-
-        <!-- Display the extracted PDF data -->
-        <div>
-            <h2>Extracted Text:</h2>
-            <pre>{{ pdf_text }}</pre>
-        </div>
-
-        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+<div align="center" class="border">
+    <div class="header">
+        <h1 class="word">Acknowledgement</h1>
     </div>
+    </br></br></br>
+    <h1 class="bottom">
+        Hi {{ session.username }}!!</br></br> Your file ({{ name }}) has been uploaded successfully.
+    </h1></br></br></br>
+
+    <!-- Display the extracted PDF data -->
+    <div>
+        <h2>Extracted Text:</h2>
+        <pre>{{ pdf_text }}</pre>
+    </div>
+
+
+    <div class="find-skills">
+        <form action="/findskills" method="post">
+            <input type="submit" class="btn" value="Find skills"></br></br>
+        </form>
+    </div>
+
+
+    <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+</div>
 </body>
 </html>

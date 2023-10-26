@@ -6,6 +6,9 @@ from distutils.log import debug
 from fileinput import filename
 from flask import *
 import os
+
+from FindSkills.FindSkill import get_Skills
+from FindSkills.top_skills import findTopSkills
 from PdfConvertion.PdfProcessing import extract_text_from_pdf
 
 app = Flask(__name__)
@@ -117,8 +120,19 @@ def fileUpload():
 					   (username, file_name, file_number if existing_file else 1))
 		mysql.connection.commit()
 		pdf_text = extract_text_from_pdf(file_path)
-
+		cleaned_text = pdf_text.encode('ascii', 'ignore').decode('ascii')
+		data  = [{"Information": cleaned_text }]
+		with open('information.json', 'w') as json_file:
+			json.dump(data, json_file)
 		return render_template("Acknowledgement.html", name=file_name, pdf_text=pdf_text)
+
+@app.route('/findskills', methods=['POST'])
+def find_skills():
+	skills = get_Skills()
+	print (skills)
+	topskills = findTopSkills()
+	print (topskills)
+	return render_template("skills.html",skills=skills)
 
 
 if __name__ == '__main__':
