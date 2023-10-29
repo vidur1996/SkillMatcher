@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #9AC0CD;
+            color: #236B8E;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(35, 107, 142, 0.1);
+        }
+
+        a {
+            color: #236B8E;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Job Listings</h1>
+    <ul>
+        {% for job in jobs %}
+            <li>
+                <h2>{{ job["Job Title"] }}</h2>
+                <p>Company: {{ job["Company Name"] }}</p>
+                <p><a href="{{ job["Link"] }}" target="_blank">Apply</a></p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
