@@ -12,7 +12,7 @@
         $('form').submit(function(e) {
             e.preventDefault();
             $.post('/saveJobs', $(this).serialize(), function(data) {
-                alert(data); // Display the response in an alert
+                alert('Response: '+data); // Display the response in an alert
             });
         });
     });

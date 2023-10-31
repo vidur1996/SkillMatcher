@@ -1,6 +1,6 @@
 body {
             font-family: Arial, sans-serif;
-            background-color: #9AC0CD;
+
             color: #236B8E;
             margin: 0;
             padding: 0;
@@ -32,9 +32,9 @@ body {
             text-decoration: underline;
         }
         .border{
-				padding: 80px 50px;
+				padding: 40px 50px;
 				width: 600px;
-				height: 450px;
+				height: auto;
 				border: 1px solid #236B8E;
 				border-radius: 0px;
 				background-color: #9AC0CD;
