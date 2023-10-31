@@ -138,8 +138,21 @@ def find_skills():
 @app.route('/findJobs')
 def find_jobs():
     skill = '+'.join(topskills)
-    job_list = runJob(skill)
+   #job_list = runJob(skill)   enable to runn from websrcaping
+    with open('jobs_data.json', 'r') as json_file:
+        job_list = json.load(json_file)
     return render_template('job.html', jobs=job_list)
+@app.route('/saveJobs', methods=['POST'])
+def save_job():
+    job_title = request.form.get('job_title')
+    company_name = request.form.get('company_name')
+    job_link = request.form.get('job_link')
+    username = session.get('username')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s)', (username, job_title, company_name,job_link,))
+    mysql.connection.commit()
+
+    return "Job saved successfully!"  # You can return a response or redirect as needed
 
 
 if __name__ == '__main__':
