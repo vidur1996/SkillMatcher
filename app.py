@@ -6,7 +6,7 @@ from distutils.log import debug
 from fileinput import filename
 from flask import *
 import os
-
+import datetime
 from FindSkills.FindSkill import get_Skills
 from FindSkills.top_skills import findTopSkills
 from PdfConvertion.PdfProcessing import extract_text_from_pdf
@@ -97,7 +97,8 @@ def fileUpload():
         # Assuming 'username' is sent as a parameter in the request
         username = session.get('username')
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM files WHERE username = % s', (username,))
+        # Check if the same file has been uploaded before by checking original filename
+        cursor.execute('SELECT * FROM files WHERE username = %s', (username,))
         existing_file = cursor.fetchone()
         print(existing_file)
         if existing_file:
@@ -116,9 +117,14 @@ def fileUpload():
 
         file_path = os.path.join(cv_dir, file_name)
         f.save(file_path)
+
+        # Save the original filename
+        original_filename = f.filename
+        upload_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # Add entry to the 'files' table
-        cursor.execute("INSERT INTO files (username, file_name, file_number) VALUES (%s, %s, %s)",
-                       (username, file_name, file_number if existing_file else 1))
+        cursor.execute(
+            "INSERT INTO files (username, file_name, file_number, upload_date, filename_real) VALUES (%s, %s, %s, %s, %s)",
+            (username, file_name, file_number if existing_file else 1, upload_date, original_filename))
         mysql.connection.commit()
         pdf_text = extract_text_from_pdf(file_path)
         cleaned_text = pdf_text.encode('ascii', 'ignore').decode('ascii')
@@ -153,6 +159,28 @@ def save_job():
     mysql.connection.commit()
 
     return "Job saved successfully!"  # You can return a response or redirect as needed
+
+@app.route('/oldCV', methods=['GET'])
+def showUploadedFiles():
+    username = session.get('username')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM files WHERE username = %s', (username,))
+    uploaded_files = cursor.fetchall()
+    return render_template("oldCV.html", uploaded_files=uploaded_files)
+
+@app.route('/use_cv', methods=['POST'])
+def use_cv_for_job_search():
+    selected_file = request.form['file_name']
+    print (selected_file)
+    cv_dir = os.path.join(os.getcwd(), 'cv')
+    os.makedirs(cv_dir, exist_ok=True)
+    file_path = os.path.join(cv_dir, selected_file)
+    pdf_text = extract_text_from_pdf(file_path)
+    cleaned_text = pdf_text.encode('ascii', 'ignore').decode('ascii')
+    data = [{"Information": cleaned_text}]
+    with open('information.json', 'w') as json_file:
+        json.dump(data, json_file)
+    return render_template("Acknowledgement.html", name="file", pdf_text=pdf_text)
 
 
 if __name__ == '__main__':

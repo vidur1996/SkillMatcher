@@ -4,13 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skill matcher</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='stylesindex.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesoldcv.css') }}">
 
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Skill Matcher</h1>
+            <div class="menu">
+                <form action="/oldCV" method="get">
+                     <input type="submit" class="menu-btn" value="View Old CV">
+                </form>
+                <form action="/oldJobs" method="get">
+                     <input type="submit" class="menu-btn" value="Saved Jobs">
+                </form>
+                <form action="/editProfile" method="get">
+                     <input type="submit" class="menu-btn" value="Edit Profile">
+                </form>
+
+            </div>
         </div>
 
         <div class="welcome-message">

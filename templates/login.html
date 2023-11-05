@@ -5,13 +5,30 @@
 		<title> Login </title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <style>
+            .logo {
+                vertical-align: middle;
+                margin-right: 10px;
+                height: 100px;
+                width: 120px;/* Adjust as needed */
+            }
+            body {
+                background-image: url('static/login_bg.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-color: rgba(255, 255, 255, 0.3); /* 30% opacity white background */
+            }
+        </style>
 	</head>
 	<body></br></br>
 		<div align="center">
-            <h1> Skill Matcher</h1>
+
 		<div align="center" class="border">
 			<div class="header">
-				<h1 class="word">Login</h1>
+				<h1>
+                <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
+            </h1>
 			</div></br></br></br>
 			<h2 class="word">
 				<form action="{{ url_for('login') }}" method="post">
