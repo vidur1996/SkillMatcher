@@ -154,11 +154,12 @@ def save_job():
     company_name = request.form.get('company_name')
     job_link = request.form.get('job_link')
     username = session.get('username')
+    upload_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s)', (username, job_title, company_name,job_link,))
+    cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s, % s)', (username, job_title, company_name,job_link,upload_date,))
     mysql.connection.commit()
 
-    return "Job saved successfully!"  # You can return a response or redirect as needed
+    return "Job saved successfully!"
 
 @app.route('/oldCV', methods=['GET'])
 def showUploadedFiles():
@@ -181,6 +182,25 @@ def use_cv_for_job_search():
     with open('information.json', 'w') as json_file:
         json.dump(data, json_file)
     return render_template("Acknowledgement.html", name="file", pdf_text=pdf_text)
+
+
+@app.route('/savedJobs', methods=['GET'])
+def showSavedJobs():
+    username = session.get('username')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM jobs WHERE username = %s', (username,))
+    savedJobs = cursor.fetchall()
+
+    return render_template("savedJobs.html", savedJobs = savedJobs)
+
+@app.route('/deleteJob', methods=['POST'])
+def delete_job():
+    job_id = request.form.get('job_id')
+    print (job_id)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('DELETE FROM jobs WHERE id = %s', (job_id,))
+    mysql.connection.commit()
+    return "Job deleted successfully!"
 
 
 if __name__ == '__main__':

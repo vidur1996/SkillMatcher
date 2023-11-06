@@ -90,3 +90,8 @@ body {
         .menu-btn:hover {
             background-color: #0056b3; /* Hover state background color */
         }
+        .deleteimg {
+            max-height: 20px;
+            max-width: 20px;
+        }
+
