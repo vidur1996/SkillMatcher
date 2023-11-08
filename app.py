@@ -143,10 +143,11 @@ def find_skills():
 
 @app.route('/findJobs')
 def find_jobs():
-    skill = '+'.join(topskills)
-   #job_list = runJob(skill)   enable to runn from websrcaping
-    with open('jobs_data.json', 'r') as json_file:
-        job_list = json.load(json_file)
+    skill = findTopSkills()
+    job_list = runJob(skill)
+# enable to runn from websrcaping
+   # with open('jobs_data.json', 'r') as json_file:
+      #  job_list = json.load(json_file)
     return render_template('job.html', jobs=job_list)
 @app.route('/saveJobs', methods=['POST'])
 def save_job():

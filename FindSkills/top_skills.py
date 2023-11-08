@@ -34,7 +34,7 @@ def identify_skills_from_information(information):
     lemmatized_tokens = [lemmatizer.lemmatize(token) for token in filtered_tokens]
     # Iterate through the tokens and check if they are in the model's vocabulary
     for token in lemmatized_tokens:
-        if token in model.wv:
+        if len(token) > 1 and token != "skill" and token in model.wv:
             identified_skills.append(token)
 
     return identified_skills
@@ -62,4 +62,6 @@ def findTopSkills():
 
         print(f"Top 5 Keywords: {', '.join(top_keywords)}")
         print("\n")
-    return top_keywords
+        topSkils = '+'.join(top_keywords)
+        print(topSkils)
+    return topSkils

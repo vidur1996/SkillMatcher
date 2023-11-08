@@ -15,7 +15,7 @@ def runJob(skills):
     # skills = "java  oop"
     base_url = "https://www.indeed.com"
     driver.get("https://www.indeed.com/jobs?q=" + skills + "&l=london")
-
+    print ("https://www.indeed.com/jobs?q=" + skills + "&l=london")
     content = driver.page_source
 
     soup = BeautifulSoup(content, "html.parser")
