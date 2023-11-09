@@ -4,7 +4,7 @@ from selenium.webdriver.firefox.options import Options
 import json
 
 
-def runJob(skills):
+def runJob(skills,location):
     options = Options()
     options.add_argument("--headless")
     driver = webdriver.Chrome(options=options)
@@ -14,8 +14,8 @@ def runJob(skills):
     links = []
     # skills = "java  oop"
     base_url = "https://www.indeed.com"
-    driver.get("https://www.indeed.com/jobs?q=" + skills + "&l=london")
-    print ("https://www.indeed.com/jobs?q=" + skills + "&l=london")
+    driver.get("https://www.indeed.com/jobs?q=" + skills + "&l="+location)
+    print ("https://www.indeed.com/jobs?q=" + skills + "&l="+location)
     content = driver.page_source
 
     soup = BeautifulSoup(content, "html.parser")

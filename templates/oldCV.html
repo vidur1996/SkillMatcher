@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uploaded Files</title>
-     <link rel="stylesheet" href="{{ url_for('static', filename='stylesindex.css') }}">
-     <style>
-            .logo {
-                vertical-align: middle;
-                margin-right: 10px;
-                height: 100px;
-                width: 120px;/* Adjust as needed */
-            }
-            body {
-                background-image: url('static/login_bg.jpg');
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-color: rgba(255, 255, 255, 0.3); /* 30% opacity white background */
-            }
-            table {
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesindex.css') }}">
+    <style>
+        .logo {
+            vertical-align: middle;
+            margin-right: 10px;
+            height: 100px;
+            width: 120px; /* Adjust as needed */
+        }
+
+        body {
+            background-image: url('static/login_bg.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: rgba(255, 255, 255, 0.3); /* 30% opacity white background */
+        }
+
+        table {
             margin: 0 auto;
             border-collapse: collapse;
 
@@ -34,21 +36,34 @@
         th {
             background-color: #f2f2f2;
         }
-        </style>
+    </style>
 </head>
 <body>
-    <div class="container">
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.post('/deletecv', $(this).serialize(), function (data) {
+                alert('Response: ' + data);
+                if (data === "Job deleted successfully!") {
+                    location.reload(); // Reload the page
+                }
+            });
+        });
+    });
+</script>
+<div class="container">
     <div class="header">
-       <h1>
-                <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
-            </h1>
+        <h1>
+            <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
+        </h1>
         <h1>Old CV </h1>
     </div>
     <table>
         <tr>
             <th>File Name</th>
             <th>Upload Date</th>
-            <th>Actions</th>
+            <th colspan="2 ">Actions</th>
         </tr>
         {% for file in uploaded_files %}
             <tr>
@@ -57,12 +72,18 @@
                 <td>
                     <form action="/use_cv" method="post">
                         <input type="hidden" name="file_name" value="{{ file.file_name }}">
-                        <input type="submit"  class="menu-btn" value="Use this CV for job search">
+                        <input type="submit" class="menu-btn" value="Use this CV for job search">
+                    </form>
+                </td>
+                <td>
+                    <form action="/deletecv" method="post">
+                        <input type="hidden" name="file_id" value="{{ file.id }}">
+                        <input type="image" class="deleteimg" src="static/delete.png" alt="Delete">
                     </form>
                 </td>
             </tr>
         {% endfor %}
     </table>
-    </div>
+</div>
 </body>
 </html>

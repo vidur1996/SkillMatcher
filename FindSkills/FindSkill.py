@@ -14,6 +14,9 @@ def identify_skills_from_information(information):
     # Tokenize the input text
     tokenized_text = word_tokenize(information.lower())
 
+    # Initialize an empty set to store identified skills
+    identified_skills_set = set()
+
     # Initialize an empty list to store identified skills
     identified_skills = []
 
@@ -35,10 +38,13 @@ def identify_skills_from_information(information):
 
     # Iterate through the tokens and check if they are in the model's vocabulary
     for token in lemmatized_tokens:
-        if token in model.wv:
+        if len(token) > 1 and token != "skill" and token in model.wv and token not in identified_skills_set:
             identified_skills.append(token)
+            identified_skills_set.add(token)
 
     return identified_skills
+
+
 
 def get_Skills():
     skillsFound = []

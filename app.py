@@ -1,12 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
-import re
-from distutils.log import debug
-from fileinput import filename
-from flask import *
-import os
 import datetime
+import os
+import re
+
+import MySQLdb.cursors
+from flask import *
+from flask_mysqldb import MySQL
+
 from FindSkills.FindSkill import get_Skills
 from FindSkills.top_skills import findTopSkills
 from PdfConvertion.PdfProcessing import extract_text_from_pdf
@@ -23,6 +22,7 @@ app.config['MYSQL_DB'] = 'skillmatcher'
 
 mysql = MySQL(app)
 topskills = []
+
 
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
@@ -60,6 +60,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        location = request.form['location']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = % s', (username,))
         account = cursor.fetchone()
@@ -69,10 +70,12 @@ def register():
             msg = 'Invalid email address !'
         elif not re.match(r'[A-Za-z0-9]+', username):
             msg = 'Username must contain only characters and numbers !'
+        elif not re.match(r'[A-Za-z0-9]+', location):
+            msg = 'Username must contain only characters and numbers !'
         elif not username or not password or not email:
             msg = 'Please fill out the form !'
         else:
-            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s)', (username, password, email,))
+            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s)', (username, password, email,location,))
             mysql.connection.commit()
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
@@ -128,27 +131,33 @@ def fileUpload():
         mysql.connection.commit()
         pdf_text = extract_text_from_pdf(file_path)
         cleaned_text = pdf_text.encode('ascii', 'ignore').decode('ascii')
-        data  = [{"Information": cleaned_text }]
+        data = [{"Information": cleaned_text}]
         with open('information.json', 'w') as json_file:
             json.dump(data, json_file)
         return render_template("Acknowledgement.html", name=file_name, pdf_text=pdf_text)
 
+
 @app.route('/findskills', methods=['POST'])
 def find_skills():
     skills = get_Skills()
-    print (skills)
+    print(skills)
     topskills = findTopSkills()
-    print (topskills)
-    return render_template("skills.html",skills=skills)
+    print(topskills)
+    return render_template("skills.html", skills=skills)
+
 
 @app.route('/findJobs')
 def find_jobs():
     skill = findTopSkills()
-    job_list = runJob(skill)
-# enable to runn from websrcaping
-   # with open('jobs_data.json', 'r') as json_file:
-      #  job_list = json.load(json_file)
-    return render_template('job.html', jobs=job_list)
+    username = session.get('username')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
+    location = cursor.fetchone()
+    location_value = location['location'] if location else None
+    job_list = runJob(skill,location_value)
+    return render_template('job.html', jobs=job_list,location =location_value)
+
+
 @app.route('/saveJobs', methods=['POST'])
 def save_job():
     job_title = request.form.get('job_title')
@@ -157,10 +166,12 @@ def save_job():
     username = session.get('username')
     upload_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s, % s)', (username, job_title, company_name,job_link,upload_date,))
+    cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s, % s)',
+                   (username, job_title, company_name, job_link, upload_date,))
     mysql.connection.commit()
 
     return "Job saved successfully!"
+
 
 @app.route('/oldCV', methods=['GET'])
 def showUploadedFiles():
@@ -170,10 +181,21 @@ def showUploadedFiles():
     uploaded_files = cursor.fetchall()
     return render_template("oldCV.html", uploaded_files=uploaded_files)
 
+
+@app.route('/deletecv', methods=['POST'])
+def delete_cv():
+    file_id = request.form.get('file_id')
+    print(file_id)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('DELETE FROM files WHERE id = %s', (file_id,))
+    mysql.connection.commit()
+    return "CV deleted successfully!"
+
+
 @app.route('/use_cv', methods=['POST'])
 def use_cv_for_job_search():
     selected_file = request.form['file_name']
-    print (selected_file)
+    print(selected_file)
     cv_dir = os.path.join(os.getcwd(), 'cv')
     os.makedirs(cv_dir, exist_ok=True)
     file_path = os.path.join(cv_dir, selected_file)
@@ -192,16 +214,38 @@ def showSavedJobs():
     cursor.execute('SELECT * FROM jobs WHERE username = %s', (username,))
     savedJobs = cursor.fetchall()
 
-    return render_template("savedJobs.html", savedJobs = savedJobs)
+    return render_template("savedJobs.html", savedJobs=savedJobs)
+
 
 @app.route('/deleteJob', methods=['POST'])
 def delete_job():
     job_id = request.form.get('job_id')
-    print (job_id)
+    print(job_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('DELETE FROM jobs WHERE id = %s', (job_id,))
     mysql.connection.commit()
     return "Job deleted successfully!"
+
+
+@app.route('/findwithskills', methods=['POST'])
+def find_jobs_with_skills():
+    selected_skills = request.form.getlist('selected_skills[]')
+    if not selected_skills:
+        return """
+            <script>
+                alert('Please select at least one skill.');
+                window.history.back();
+            </script>
+            """
+    skills = '+'.join(selected_skills)
+    print(skills)
+    username = session.get('username')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
+    location = cursor.fetchone()
+    location_value = location['location'] if location else None
+    job_list = runJob(skills, location_value)
+    return render_template('job.html', jobs=job_list, location =location_value)
 
 
 if __name__ == '__main__':
