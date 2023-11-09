@@ -1,0 +1,124 @@
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .logo {
+            vertical-align: middle;
+            margin-right: 10px;
+            height: 100px;
+            width: 120px; /* Adjust as needed */
+        }
+
+
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            color: #333;
+        }
+
+        .welcome-message {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+        }
+        .warning-message{
+            text-align: center;
+            font-size: 18px;
+            color: #e54141;
+        }
+
+        .file-upload {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .file-upload input[type="file"] {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .file-upload input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .logout-btn:hover {
+            color: #0056b3;
+        }
+
+        .menu {
+            display: flex;
+            margin-top: 10px;
+           justify-content: center;
+        }
+
+        .menu-btn {
+            text-align: center;
+            background-color: #007BFF; /* Button background color */
+            color: #ffffff; /* Button text color */
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px; /* Spacing between buttons */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-btn:hover {
+            background-color: #0056b3; /* Hover state background color */
+        }
+        table {
+            margin: 0 auto;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tablestyles {
+            width: 300px;
+            border: 1px solid black;
+            padding: 8px;
+
+        }
+
+        .skills_container {
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+
+        .form-container {
+            display: none;
+        }
+

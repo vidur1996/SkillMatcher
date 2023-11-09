@@ -3,30 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='skills.css') }}">
     <title>List of Skills</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .tablestyles {
-            width: 300px;
-            border: 1px solid black;
-            padding: 8px;
-
-        }
-
-        .skills_container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .form-container {
-            display: none;
+        body {
+            background-image: url('static/login_bg.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: rgba(255, 255, 255, 0.3); /* 30% opacity white background */
         }
     </style>
-
 </head>
 <body>
 <script>
@@ -35,13 +22,18 @@
                 e.preventDefault();
                 $.post('/findwithskills', $(this).serialize(), function (data) {
                                     console.log("hrllp");
-                    alert('Response: ' + data); // Display the response in an alert
+                    alert('Response: ' + data);
                 });
             });
         });
     </script>
-
-<h1>List of Skills</h1>
+ <div class="container">
+        <div class="header">
+            <h1>
+                <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
+            </h1>
+            <h1>List of Skills</h1>
+        </div>
 <div class="skills_container">
     <form action="/findwithskills" method="post" id="skillsForm" enctype="multipart/form-data">
         <div class="skills_container">
@@ -51,14 +43,16 @@
                 </div>
             {% endfor %}
         </div>
-        <input type="submit" value="Find Jobs with Selected Skills">
+        <br>
+        <input  type="submit" class="menu-btn" value="Search Jobs with Selected Skills">
     </form>
 </div>
 
-<form action="/findJobs" method="get">
-    <input type="submit" value="Find Jobs">
+<form action="/findJobs"  method="get">
+    <br>
+    <input type="submit" class="menu-btn" value="Auto suggest jobs">
 </form>
-
+ </div>
 
 </body>
 </html>
