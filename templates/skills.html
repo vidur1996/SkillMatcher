@@ -16,43 +16,50 @@
     </style>
 </head>
 <body>
-<script>
-        $(document).ready(function () {
-            $('form').submit(function (e) {
-                e.preventDefault();
-                $.post('/findwithskills', $(this).serialize(), function (data) {
-                                    console.log("hrllp");
-                    alert('Response: ' + data);
-                });
-            });
-        });
-    </script>
- <div class="container">
-        <div class="header">
-            <h1>
-                <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
-            </h1>
-            <h1>List of Skills</h1>
-        </div>
-<div class="skills_container">
-    <form action="/findwithskills" method="post" id="skillsForm" enctype="multipart/form-data">
-        <div class="skills_container">
-            {% for skill in skills %}
-                <div class="tablestyles">
-                    <input type="checkbox" name="selected_skills[]" value="{{ skill }}">{{ skill }}
+
+<div class="container">
+    <div class="header">
+        <h1>
+            <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
+        </h1>
+        <h1>List of Skills</h1>
+    </div>
+    <div class="skills_container">
+        <form action="/findwithskills" method="post" onsubmit="return validateForm()">
+            <div style="display: flex; flex-direction: column; align-items: center">
+                <div style="display: flex; flex-wrap: wrap; justify-content: center">
+                    {% for skill in skills %}
+                        <div style="border: 1px solid black; width: 200px"><span><input type="checkbox"
+                                                                                        id={{ skill }} name={{ skill }}
+                                                                                        value={{ skill }}></span>{{ skill }}
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+            <br>
+                <button type="submit" class="menu-btn" style="width: 300px;">Search Jobs with Selected Skills</button>
+            </div>
+        </form>
+    </div>
+    <br>
+<br>
+    <form action="/findJobs" method="get" style=" display: flex; justify-content: center">
         <br>
-        <input  type="submit" class="menu-btn" value="Search Jobs with Selected Skills">
+        <input type="submit" class="menu-btn" value="Auto suggest jobs">
     </form>
 </div>
+<script>
+    function validateForm() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 
-<form action="/findJobs"  method="get">
-    <br>
-    <input type="submit" class="menu-btn" value="Auto suggest jobs">
-</form>
- </div>
+        if (!isChecked) {
+            alert('At least one checkbox is checked!');
+            return false;
+        }
+
+        return true;
+    }
+</script>
 
 </body>
 </html>

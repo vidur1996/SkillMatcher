@@ -1,20 +1,12 @@
-        body {
+body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
-        .logo {
-            vertical-align: middle;
-            margin-right: 10px;
-            height: 100px;
-            width: 120px; /* Adjust as needed */
-        }
-
-
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
@@ -84,7 +76,6 @@
         }
 
         .menu-btn {
-            text-align: center;
             background-color: #007BFF; /* Button background color */
             color: #ffffff; /* Button text color */
             border: none;
@@ -98,28 +89,5 @@
 
         .menu-btn:hover {
             background-color: #0056b3; /* Hover state background color */
-        }
-        table {
-            margin: 0 auto;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .tablestyles {
-            width: 300px;
-            border: 1px solid black;
-            padding: 8px;
-
-        }
-
-        .skills_container {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-
-        }
-
-        .form-container {
-            display: none;
         }
 
