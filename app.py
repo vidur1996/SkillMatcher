@@ -98,7 +98,7 @@ def fileUpload():
 
         # Reset the file pointer after reading for size check
         f.seek(0)
-        # Assuming 'username' is sent as a parameter in the request
+        # username is sent as a parameter in the request
         username = session.get('username')
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         # Check if the same file has been uploaded before by checking original filename
@@ -141,9 +141,7 @@ def fileUpload():
 @app.route('/findskills', methods=['POST'])
 def find_skills():
     skills = get_Skills()
-    print(skills)
     topskills = findTopSkills()
-    print(topskills)
     return render_template("skills.html", skills=skills)
 
 
@@ -189,7 +187,6 @@ def showUploadedFiles():
 @app.route('/deletecv', methods=['POST'])
 def delete_cv():
     file_id = request.form.get('file_id')
-    print(file_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('DELETE FROM files WHERE id = %s', (file_id,))
     mysql.connection.commit()
@@ -199,7 +196,6 @@ def delete_cv():
 @app.route('/use_cv', methods=['POST'])
 def use_cv_for_job_search():
     selected_file = request.form['file_name']
-    print(selected_file)
     cv_dir = os.path.join(os.getcwd(), 'cv')
     os.makedirs(cv_dir, exist_ok=True)
     file_path = os.path.join(cv_dir, selected_file)
@@ -224,7 +220,6 @@ def showSavedJobs():
 @app.route('/deleteJob', methods=['POST'])
 def delete_job():
     job_id = request.form.get('job_id')
-    print(job_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('DELETE FROM jobs WHERE id = %s', (job_id,))
     mysql.connection.commit()
@@ -238,8 +233,6 @@ def find_jobs_with_skills():
     skilllist = ','.join(skillArr)
     Select_skill.clear()
     Select_skill.extend(skillArr)
-    print(skills)
-    print(Select_skill)
     username = session.get('username')
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
@@ -263,7 +256,6 @@ def update_profile():
     def update_profile():
         username = request.form.get('username')
         current_password = request.form.get('password')
-
         new_password1 = request.form.get('newpassword1')
         new_password2 = request.form.get('newpassword2')
         location = request.form.get('location')
@@ -272,7 +264,6 @@ def update_profile():
         data = cursor.fetchone()
         savedlocation = data['location'] if data else None
         savedPassword = data['password'] if data else None
-        print(savedPassword)
         # Validate current password
         if current_password != savedPassword:
             return render_template('editProfile.html', msg='Incorrect current password', username=username,
@@ -310,7 +301,6 @@ def change_location_s():
     location = request.form.get('location')
     skills = '+'.join(Select_skill)
     skilllist = ','.join(Select_skill)
-    print(Select_skill)
     job_list = runJob(skills, location)
     return render_template('jobwithSkill.html', jobs=job_list, location=location, skilllist=skilllist)
 

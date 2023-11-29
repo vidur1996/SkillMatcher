@@ -59,9 +59,4 @@ def findTopSkills():
         top_keywords_indices = tfidf_scores.indices[tfidf_scores.data.argsort()[-5:][::-1]]
         top_keywords = [feature_names[index] for index in top_keywords_indices]
 
-
-        print(f"Top 5 Keywords: {', '.join(top_keywords)}")
-        print("\n")
-        topSkils = '+'.join(top_keywords)
-        print(topSkils)
     return top_keywords

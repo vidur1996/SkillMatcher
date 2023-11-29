@@ -58,6 +58,4 @@ def get_Skills():
         skillsFound = identify_skills_from_information(information)
 
        # print(f"CV Information: {information}")
-        print(f"Skills identified: {skillsFound}")
-        print("\n")
     return skillsFound

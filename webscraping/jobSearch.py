@@ -12,16 +12,16 @@ def runJob(skills,location):
     job_titles = []
     company_names = []
     links = []
-    # skills = "java  oop"
-    base_url = "https://www.indeed.com"
-    driver.get("https://www.indeed.com/jobs?q=" + skills + "&l="+location)
+
+    base_url = "https://uk.indeed.com"
+    driver.get("https://uk.indeed.com/jobs?q=" + skills + "&l="+location)
     print ("https://www.indeed.com/jobs?q=" + skills + "&l="+location)
     content = driver.page_source
 
     soup = BeautifulSoup(content, "html.parser")
 
     print("fetch done")
-    job_title = ""
+
 
     # Find the container containing job cards
     job_cards_container = soup.find(id="mosaic-provider-jobcards")
@@ -40,10 +40,6 @@ def runJob(skills,location):
             company_names.append(company_name)
             links.append(link)
 
-    # Print the results
-    # print("Job Titles:", job_titles)
-    # print("Company Names:", company_names)
-    # print("Links:", links)
 
     # Create a list of dictionaries
     jobs_list = []
@@ -60,6 +56,5 @@ def runJob(skills,location):
     with open('jobs_data.json', 'w') as json_file:
         json.dump(jobs_list, json_file)
 
-    print("Data saved as jobs_data.json")
 
     return jobs_list
