@@ -64,4 +64,4 @@ def findTopSkills():
         print("\n")
         topSkils = '+'.join(top_keywords)
         print(topSkils)
-    return topSkils
+    return top_keywords

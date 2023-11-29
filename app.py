@@ -22,6 +22,7 @@ app.config['MYSQL_DB'] = 'skillmatcher'
 
 mysql = MySQL(app)
 topskills = []
+Select_skill = []
 
 
 @app.route('/')
@@ -148,14 +149,17 @@ def find_skills():
 
 @app.route('/findJobs')
 def find_jobs():
-    skill = findTopSkills()
+    topskills.clear()
+    topskills.extend(findTopSkills())
+    skill = '+'.join(topskills)
     username = session.get('username')
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
     location = cursor.fetchone()
     location_value = location['location'] if location else None
     job_list = runJob(skill,location_value)
-    return render_template('job.html', jobs=job_list,location =location_value)
+    skilllist = ','.join(topskills);
+    return render_template('job.html', jobs=job_list, location=location_value, skilllist=skilllist)
 
 
 @app.route('/saveJobs', methods=['POST'])
@@ -229,17 +233,20 @@ def delete_job():
 
 @app.route('/findwithskills', methods=['POST'])
 def find_jobs_with_skills():
-
     skillArr = [value for value in request.form.values()]
     skills = '+'.join(skillArr)
+    skilllist = ','.join(skillArr)
+    Select_skill.clear()
+    Select_skill.extend(skillArr)
     print(skills)
+    print(Select_skill)
     username = session.get('username')
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
     location = cursor.fetchone()
     location_value = location['location'] if location else None
     job_list = runJob(skills, location_value)
-    return render_template('job.html', jobs=job_list, location =location_value)
+    return render_template('jobwithSkill.html', jobs=job_list, location =location_value, skilllist = skilllist)
 
 @app.route('/profile', methods=['GET'])
 def edit_profile():
@@ -253,43 +260,70 @@ def edit_profile():
 
 @app.route('/update', methods=['POST'])
 def update_profile():
-    username = request.form.get('username')
-    current_password = request.form.get('password')
+    def update_profile():
+        username = request.form.get('username')
+        current_password = request.form.get('password')
 
-    new_password1 = request.form.get('newpassword1')
-    new_password2 = request.form.get('newpassword2')
-    location = request.form.get('location')
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
-    data = cursor.fetchone()
-    savedlocation = data['location'] if data else None
-    savedPassword = data['password'] if data else None
-    print(savedPassword)
-    # Validate current password
-    if current_password != savedPassword:
-        return render_template('editProfile.html', msg='Incorrect current password', username=username, location=location)
-    if not new_password1 and not new_password2 :
-        if location != savedlocation:
-            cursor.execute('UPDATE accounts SET location = %s WHERE username = %s', (location , username,))
+        new_password1 = request.form.get('newpassword1')
+        new_password2 = request.form.get('newpassword2')
+        location = request.form.get('location')
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
+        data = cursor.fetchone()
+        savedlocation = data['location'] if data else None
+        savedPassword = data['password'] if data else None
+        print(savedPassword)
+        # Validate current password
+        if current_password != savedPassword:
+            return render_template('editProfile.html', msg='Incorrect current password', username=username,
+                                   location=location)
+        if not new_password1 and not new_password2:
+            if location != savedlocation:
+                cursor.execute('UPDATE accounts SET location = %s WHERE username = %s', (location, username,))
+                mysql.connection.commit()
+                return render_template('editProfile.html', msg='Location saved', username=username,
+                                       location=location, close_and_back=True)
+            else:
+                return render_template('editProfile.html', msg='Please enter password change location',
+                                       username=username,
+                                       location=location)
+        if new_password1 != new_password2:
+            return render_template('editProfile.html', msg='New password and reentered password dont match',
+                                   username=username, location=location)
+        if new_password1 == savedPassword:
+            return render_template('editProfile.html', msg='used the same password', username=username,
+                                   location=location)
+
+        if not location:
+            cursor.execute('UPDATE accounts SET location = %s, password = %s WHERE username = %s',
+                           (location, new_password2, username,))
             mysql.connection.commit()
-            return render_template('editProfile.html', msg='Location saved', username=username,
+            return render_template('editProfile.html', msg='Password Updated', username=username,
                                    location=location, close_and_back=True)
         else:
-            return render_template('editProfile.html', msg='Please enter password change location', username=username,
-                                  location=location)
-    if new_password1 != new_password2:
-        return render_template('editProfile.html', msg='New password and reentered password dont match', username=username, location=location)
-    if new_password1 == savedPassword:
-        return render_template('editProfile.html', msg='used the same password', username=username, location=location)
 
-    if not location:
-        cursor.execute('UPDATE accounts SET location = %s, password = %s WHERE username = %s', (location, new_password2, username,))
-        mysql.connection.commit()
-        return render_template('editProfile.html', msg='Password Updated', username=username,
-                                   location=location , close_and_back=True)
-    else:
+            return render_template('editProfile.html', msg='Profile updated successfully', username=username,
+                                   location=location)
 
-        return render_template('editProfile.html', msg='Profile updated successfully', username=username, location=location)
+@app.route('/change_location_skills', methods=['POST'])
+def change_location_s():
+    location = request.form.get('location')
+    skills = '+'.join(Select_skill)
+    skilllist = ','.join(Select_skill)
+    print(Select_skill)
+    job_list = runJob(skills, location)
+    return render_template('jobwithSkill.html', jobs=job_list, location=location, skilllist=skilllist)
+
+
+@app.route('/change_location', methods=['POST'])
+def change_location():
+    location = request.form.get('location')
+    skills = '+'.join(topskills)
+    job_list = runJob(skills, location)
+    skilllist = ','.join(topskills);
+    return render_template('job.html', jobs=job_list, location=location, skilllist=skilllist)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -26,7 +26,7 @@
 <body>
 <script>
         $(document).ready(function() {
-        $('#saveform').submit(function(e) {
+         $('#saveJobForm').submit(function(e) {
             e.preventDefault();
             $.post('/saveJobs', $(this).serialize(), function(data) {
                 alert('Response: '+data); // Display the response in an alert
@@ -36,18 +36,18 @@
 </script>
 <div align="center">
 <div class="border">
+
 <div class="header">
         <h1>
             <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
         </h1>
-
-
+</div>
     <h1>Job Listings in {{ location }}</h1>
-    <form action="/change_location" method="post">
+    <form action="/change_location_skills" method="post">
          <input id="location" name="location" type="text" placeholder="Enter Your Location" class="textbox" VALUE="{{ location }}"/>
           <input type="submit" class="menu-btn" value="Change Location">
-                </form>
-    <h1>Skill Used - {{ skilllist }}</h1><br>
+    </form>
+    <h1>Skill used - {{ skilllist }}</h1><br>
 
 
     <ul>
@@ -57,7 +57,7 @@
                 <h2>{{ job["Job Title"] }}</h2>
                 <p>Company: {{ job["Company Name"] }}</p>
                 <p><a href="{{ job["Link"] }}" target="_blank" class = "button">Apply</a></p>
-                 <form id="saveform" action="/saveJobs" method="post">
+                 <form id="saveJobForm" action="/saveJobs" method="post">
                     <input type="hidden" name="job_title" value="{{ job['Job Title'] }}">
                     <input type="hidden" name="company_name" value="{{ job['Company Name'] }}">
                     <input type="hidden" name="job_link" value="{{ job['Link'] }}">

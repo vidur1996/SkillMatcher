@@ -9,6 +9,12 @@ body {
         h1 {
             text-align: center;
         }
+        h2 {
+            color: #236B8E;
+        }
+        p{
+            color: #236B8E;
+        }
 
         ul {
             list-style-type: none;
@@ -16,7 +22,7 @@ body {
         }
 
         li {
-            background-color: #fff;
+            background-color:#9AC0CD;
             margin: 10px;
             padding: 20px;
             border-radius: 10px;
@@ -37,7 +43,7 @@ body {
 				height: auto;
 				border: 1px solid #236B8E;
 				border-radius: 0px;
-				background-color: #9AC0CD;
+				background-color: #ffffff;
 			}
         .button {
                   font: bold 12px Arial;
