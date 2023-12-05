@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Your cv </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='cvparsee.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Edit Profile</title>
     <style>
         body {
@@ -24,14 +24,16 @@
     </style>
 </head>
 <body>
-<div class="container">
+<<div align="center">
+
+		<div align="center" class="border">
     <div class="header">
         <h1>
             <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
         </h1>
         <h1>Edit Profile</h1>
     </div>
-
+<br>
                 <form action="/update" method="post">
 				    <div class="msg">{{ msg }}</div>
                         <input id="username" name="username" type="text"  class="textbox" readonly value="{{ username }}"/></br></br>
@@ -42,6 +44,7 @@
                         <input type="submit" class="btn" value="save"></br>
 				</form>
     </div>
+</div>
 </body>
 
 </html>

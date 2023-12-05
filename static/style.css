@@ -1,13 +1,13 @@
 
 			.header{
-				padding: 5px 30px;
+				padding: 5px 10px;
 				background-color: #236B8E;
 			}
 
 			.border{
-				padding: 80px 50px;
+				padding: 20px 50px;
 				width: 400px;
-				height: 450px;
+				height: 600px;
 				border: 1px solid #236B8E;
 				border-radius: 0px;
 				background-color: #9AC0CD;
@@ -24,13 +24,13 @@
 
 			.textbox{
 				padding: 10px 10px;
-				background-color: #236B8E;
+				background-color: #9AC0CD;
 				text-color: #FFFFFF;
 				border-radius: 10px;
 			}
 
 			::placeholder {
-				color: #FFFFFF;
+				color: #000000;
 				opacity: 1;
 				font-style: oblique;
 				font-weight: bold;

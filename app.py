@@ -76,7 +76,8 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form !'
         else:
-            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s)', (username, password, email,location,))
+            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s)',
+                           (username, password, email, location,))
             mysql.connection.commit()
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
@@ -91,11 +92,9 @@ def fileUpload():
         # Check if the file is a PDF
         if f.filename.split('.')[-1].lower() != 'pdf':
             return "Only PDF files are allowed."
-
         # Check if the file size is less than or equal to 2.5MB
         if len(f.read()) > 2.5 * 1024 * 1024:
             return "File size exceeds 2.5MB."
-
         # Reset the file pointer after reading for size check
         f.seek(0)
         # username is sent as a parameter in the request
@@ -116,12 +115,9 @@ def fileUpload():
         # Create a 'cv' directory if it doesn't exist
         cv_dir = os.path.join(os.getcwd(), 'cv')
         os.makedirs(cv_dir, exist_ok=True)
-
         # Save the file as 'username_cv.pdf'
-
         file_path = os.path.join(cv_dir, file_name)
         f.save(file_path)
-
         # Save the original filename
         original_filename = f.filename
         upload_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -155,7 +151,7 @@ def find_jobs():
     cursor.execute('SELECT location FROM accounts WHERE username = %s', (username,))
     location = cursor.fetchone()
     location_value = location['location'] if location else None
-    job_list = runJob(skill,location_value)
+    job_list = runJob(skill, location_value)
     skilllist = ','.join(topskills);
     return render_template('job.html', jobs=job_list, location=location_value, skilllist=skilllist)
 
@@ -171,7 +167,6 @@ def save_job():
     cursor.execute('INSERT INTO jobs VALUES (NULL, % s, % s, % s, % s, % s)',
                    (username, job_title, company_name, job_link, upload_date,))
     mysql.connection.commit()
-
     return "Job saved successfully!"
 
 
@@ -239,7 +234,8 @@ def find_jobs_with_skills():
     location = cursor.fetchone()
     location_value = location['location'] if location else None
     job_list = runJob(skills, location_value)
-    return render_template('jobwithSkill.html', jobs=job_list, location =location_value, skilllist = skilllist)
+    return render_template('jobwithSkill.html', jobs=job_list, location=location_value, skilllist=skilllist)
+
 
 @app.route('/profile', methods=['GET'])
 def edit_profile():
@@ -248,53 +244,53 @@ def edit_profile():
     cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
     data = cursor.fetchone()
     location = data['location']
-    return render_template('editProfile.html', username = username, location = location)
+    return render_template('editProfile.html', username=username, location=location)
 
 
 @app.route('/update', methods=['POST'])
 def update_profile():
-    def update_profile():
-        username = request.form.get('username')
-        current_password = request.form.get('password')
-        new_password1 = request.form.get('newpassword1')
-        new_password2 = request.form.get('newpassword2')
-        location = request.form.get('location')
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
-        data = cursor.fetchone()
-        savedlocation = data['location'] if data else None
-        savedPassword = data['password'] if data else None
-        # Validate current password
-        if current_password != savedPassword:
-            return render_template('editProfile.html', msg='Incorrect current password', username=username,
-                                   location=location)
-        if not new_password1 and not new_password2:
-            if location != savedlocation:
-                cursor.execute('UPDATE accounts SET location = %s WHERE username = %s', (location, username,))
-                mysql.connection.commit()
-                return render_template('editProfile.html', msg='Location saved', username=username,
-                                       location=location, close_and_back=True)
-            else:
-                return render_template('editProfile.html', msg='Please enter password change location',
-                                       username=username,
-                                       location=location)
-        if new_password1 != new_password2:
-            return render_template('editProfile.html', msg='New password and reentered password dont match',
-                                   username=username, location=location)
-        if new_password1 == savedPassword:
-            return render_template('editProfile.html', msg='used the same password', username=username,
-                                   location=location)
-
-        if not location:
-            cursor.execute('UPDATE accounts SET location = %s, password = %s WHERE username = %s',
-                           (location, new_password2, username,))
+    username = request.form.get('username')
+    current_password = request.form.get('password')
+    new_password1 = request.form.get('newpassword1')
+    new_password2 = request.form.get('newpassword2')
+    location = request.form.get('location')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM accounts WHERE username = %s', (username,))
+    data = cursor.fetchone()
+    savedlocation = data['location'] if data else None
+    savedPassword = data['password'] if data else None
+    # Validate current password
+    if current_password != savedPassword:
+        return render_template('editProfile.html', msg='Incorrect current password', username=username,
+                               location=location)
+    if not new_password1 and not new_password2:
+        if location != savedlocation:
+            cursor.execute('UPDATE accounts SET location = %s WHERE username = %s', (location, username,))
             mysql.connection.commit()
-            return render_template('editProfile.html', msg='Password Updated', username=username,
+            return render_template('editProfile.html', msg='Location saved', username=username,
                                    location=location, close_and_back=True)
         else:
-
-            return render_template('editProfile.html', msg='Profile updated successfully', username=username,
+            return render_template('editProfile.html', msg='Please enter password change location',
+                                   username=username,
                                    location=location)
+    if new_password1 != new_password2:
+        return render_template('editProfile.html', msg='New password and reentered password dont match',
+                               username=username, location=location)
+    if new_password1 == savedPassword:
+        return render_template('editProfile.html', msg='used the same password', username=username,
+                               location=location)
+
+    if not location:
+        cursor.execute('UPDATE accounts SET location = %s, password = %s WHERE username = %s',
+                       (location, new_password2, username,))
+        mysql.connection.commit()
+        return render_template('editProfile.html', msg='Password Updated', username=username,
+                               location=location, close_and_back=True)
+    else:
+
+        return render_template('editProfile.html', msg='Profile updated successfully', username=username,
+                               location=location)
+
 
 @app.route('/change_location_skills', methods=['POST'])
 def change_location_s():
@@ -312,7 +308,6 @@ def change_location():
     job_list = runJob(skills, location)
     skilllist = ','.join(topskills);
     return render_template('job.html', jobs=job_list, location=location, skilllist=skilllist)
-
 
 
 if __name__ == '__main__':

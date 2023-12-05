@@ -1,10 +1,11 @@
+import json
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-import json
 
 
-def runJob(skills,location):
+def runJob(skills, location):
     options = Options()
     options.add_argument("--headless")
     driver = webdriver.Chrome(options=options)
@@ -14,14 +15,13 @@ def runJob(skills,location):
     links = []
 
     base_url = "https://uk.indeed.com"
-    driver.get("https://uk.indeed.com/jobs?q=" + skills + "&l="+location)
-    print ("https://www.indeed.com/jobs?q=" + skills + "&l="+location)
+    driver.get("https://uk.indeed.com/jobs?q=" + skills + "&l=" + location)
+    print("https://www.indeed.com/jobs?q=" + skills + "&l=" + location)
     content = driver.page_source
 
     soup = BeautifulSoup(content, "html.parser")
 
     print("fetch done")
-
 
     # Find the container containing job cards
     job_cards_container = soup.find(id="mosaic-provider-jobcards")
@@ -40,7 +40,6 @@ def runJob(skills,location):
             company_names.append(company_name)
             links.append(link)
 
-
     # Create a list of dictionaries
     jobs_list = []
 
@@ -55,6 +54,5 @@ def runJob(skills,location):
     # Save the data as JSON
     with open('jobs_data.json', 'w') as json_file:
         json.dump(jobs_list, json_file)
-
 
     return jobs_list

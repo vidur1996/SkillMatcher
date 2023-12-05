@@ -30,18 +30,18 @@
                 <div style="display: flex; flex-wrap: wrap; justify-content: center">
                     {% for skill in skills %}
                         <div style="border: 1px solid black; width: 200px"><span><input type="checkbox"
-                                                                                        id={{ skill }} name={{ skill }}
-                                                                                        value={{ skill }}></span>{{ skill }}
+                                                  id={{ skill }} name={{ skill }}
+                                                  value={{ skill }}></span>{{ skill }}
                         </div>
                     {% endfor %}
                 </div>
-            <br>
+                <br>
                 <button type="submit" class="menu-btn" style="width: 300px;">Search Jobs with Selected Skills</button>
             </div>
         </form>
     </div>
     <br>
-<br>
+    <br>
     <form action="/findJobs" method="get" style=" display: flex; justify-content: center">
         <br>
         <input type="submit" class="menu-btn" value="Auto suggest jobs">

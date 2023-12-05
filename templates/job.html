@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Job Listings</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='jobs.css') }}">
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylesoldcv.css') }}">
     <style>
         .logo {
@@ -25,49 +25,50 @@
 </head>
 <body>
 <script>
-        $(document).ready(function() {
-        $('#saveform').submit(function(e) {
+    $(document).ready(function () {
+        $('#saveform').submit(function (e) {
             e.preventDefault();
-            $.post('/saveJobs', $(this).serialize(), function(data) {
-                alert('Response: '+data); // Display the response in an alert
+            $.post('/saveJobs', $(this).serialize(), function (data) {
+                alert('Response: ' + data); // Display the response in an alert
             });
         });
     });
 </script>
 <div align="center">
-<div class="border">
-<div class="header">
-        <h1>
-            <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
-        </h1>
+    <div class="border">
+        <div class="header">
+            <h1>
+                <img class="logo" src="static/logo.png" alt="Skill Matcher Logo"> Skill Matcher
+            </h1>
 
 
-    <h1>Job Listings in {{ location }}</h1>
-    <form action="/change_location" method="post">
-         <input id="location" name="location" type="text" placeholder="Enter Your Location" class="textbox" VALUE="{{ location }}"/>
-          <input type="submit" class="menu-btn" value="Change Location">
-                </form>
-    <h1>Skill Used - {{ skilllist }}</h1><br>
+            <h1>Job Listings in {{ location }}</h1>
+            <form action="/change_location" method="post">
+                <input id="location" name="location" type="text" placeholder="Enter Your Location" class="textbox"
+                       VALUE="{{ location }}"/>
+                <input type="submit" class="menu-btn" value="Change Location">
+            </form>
+            <h1>Skill Used - {{ skilllist }}</h1><br>
 
 
-    <ul>
-        {% for job in jobs %}
+            <ul>
+                {% for job in jobs %}
 
-                <li align ="left">
-                <h2>{{ job["Job Title"] }}</h2>
-                <p>Company: {{ job["Company Name"] }}</p>
-                <p><a href="{{ job["Link"] }}" target="_blank" class = "button">Apply</a></p>
-                 <form id="saveform" action="/saveJobs" method="post">
-                    <input type="hidden" name="job_title" value="{{ job['Job Title'] }}">
-                    <input type="hidden" name="company_name" value="{{ job['Company Name'] }}">
-                    <input type="hidden" name="job_link" value="{{ job['Link'] }}">
-                    <input type="submit" class="btn" value="Save this Job">
-                </form>
-            </li>
+                    <li align="left">
+                        <h2>{{ job["Job Title"] }}</h2>
+                        <p>Company: {{ job["Company Name"] }}</p>
+                        <p><a href="{{ job["Link"] }}" target="_blank" class="button">Apply</a></p>
+                        <form id="saveform" action="/saveJobs" method="post">
+                            <input type="hidden" name="job_title" value="{{ job['Job Title'] }}">
+                            <input type="hidden" name="company_name" value="{{ job['Company Name'] }}">
+                            <input type="hidden" name="job_link" value="{{ job['Link'] }}">
+                            <input type="submit" class="btn" value="Save this Job">
+                        </form>
+                    </li>
 
-        {% endfor %}
-    </ul>
-</div>
-</div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
