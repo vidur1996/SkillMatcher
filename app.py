@@ -45,7 +45,9 @@ def login():
             msg = 'Incorrect username / password !'
     return render_template('login.html', msg=msg)
 
-
+@app.route('/home', methods=['GET', 'POST'])
+def home():
+    return render_template('index.html')
 @app.route('/logout')
 def logout():
     session.pop('loggedin', None)
@@ -91,10 +93,10 @@ def fileUpload():
         f = request.files['file']
         # Check if the file is a PDF
         if f.filename.split('.')[-1].lower() != 'pdf':
-            return "Only PDF files are allowed."
+            return render_template('index.html',error_message = "Only PDF files are allowed.")
         # Check if the file size is less than or equal to 2.5MB
         if len(f.read()) > 2.5 * 1024 * 1024:
-            return "File size exceeds 2.5MB."
+            msg = "File size exceeds 2.5MB."
         # Reset the file pointer after reading for size check
         f.seek(0)
         # username is sent as a parameter in the request

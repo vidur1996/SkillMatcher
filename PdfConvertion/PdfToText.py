@@ -5,7 +5,7 @@ from nltk.stem import PorterStemmer
 
 file = open("comp.pdf","rb")
 reader=PdfReader(file)
-page1=reader.pages[0]
+page1=reader.pages[1]
 pdfData=page1.extract_text()
 
 text = pdfData
